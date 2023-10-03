@@ -1,6 +1,6 @@
-import viteLogo from '/vite.svg'
-import {useState,useEffect} from 'react'
-
+import { useEffect,useState} from 'react'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Layout from './Layout/Layout'
 
 type UserData={
   id:number
@@ -8,9 +8,10 @@ type UserData={
   salary:number
 }
 
+
 function App() {
   const[data,setData]=useState<UserData[]>([])
-  useEffect(()=>{
+   useEffect(()=>{
     const fetchApi=async()=>{
       try{
         const response=await fetch('http://localhost:8000/user')
@@ -26,16 +27,17 @@ function App() {
     }
     fetchApi()
    },[])
-  
+
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-      </div>
-      <h1>HumanDeisgn TypeScript</h1>
-      {data.map((item) => (
+     <BrowserRouter>
+      <Routes>
+        <Route path="/HumanTypeScript" element={<Layout />}>
+        </Route>
+      </Routes>
+    </BrowserRouter>
+    <h1>React Project for HumanDesign</h1>
+        {data.map((item) => (
             <div key={item.id}>
              <p>Job: {item.job}</p>
              <p>Salary: {item.salary}</p>

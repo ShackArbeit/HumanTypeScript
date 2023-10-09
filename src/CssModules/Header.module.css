@@ -2,6 +2,9 @@
       box-sizing: border-box;
       position: relative;
 }
+body{
+      width:100%;
+  }
 .navbar{
       position:fixed;
       width:100%;
@@ -25,12 +28,21 @@
       flex-direction: row;
       align-items: center;
 }
+.navbar .Nav li{
+      list-style: none;
+}
+
+
 .navbar .Nav .Navlink{
       display:block;
       color:#fff;
       line-height: 24px;
+      text-decoration: none;
       padding:20px 16px;
       transition: color 0.3s;
+}
+.navbar .NavMenu .Navlink{
+      text-decoration: none;
 }
 .navbar .Nav .Navlink:hover{
 	color: #d5a26f;
@@ -60,12 +72,12 @@
       .navbar .NavMenu .Navitem{
             text-align: center;
 		padding: 20px;
-            
       }
       .navbar .NavMenu .Navlink{
             color:#fff;
       }
 }
+
 /* 當小於768px時，漢堡列出現 */
 .navbar .menuToggle{
       width:48px;

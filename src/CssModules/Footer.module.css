@@ -4,6 +4,9 @@
       box-sizing: border-box;
       padding:0
 }
+body{
+      width:100%;
+  }
 
 .footer{
       width:100%;
@@ -19,6 +22,9 @@
     width:50%;
     display:flex;
     align-items: center;
+}
+.footerBrand img{
+      width:100%;
 }
 
 /* 有關Icons + 注意文字部分 */

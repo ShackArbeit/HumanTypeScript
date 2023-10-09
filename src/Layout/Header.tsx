@@ -1,10 +1,22 @@
 import { Link } from 'react-router-dom';
-import {useState} from 'react'
+import {useState,useEffect} from 'react'
 import style from '../CssModules/Header.module.css'
 
 
 const Header = () => {
   const[isOpen,setIsOpen]=useState(false)
+  useEffect(() => {
+    const handleResize = () => {
+      // 這裡是設定不管漢堡列是否被開啟或是關閉，當螢幕寬度大於768px時，漢堡列裡面的項目都會不顯示
+      if (window.innerWidth > 768) {
+        setIsOpen(false); 
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
   return (
    <header className={style.navbar}>
    <a href='https://www.google.com.tw/?gws_rd=ssl'>

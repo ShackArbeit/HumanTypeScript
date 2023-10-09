@@ -31,7 +31,7 @@ const Header = () => {
       <Link className={style.Navlink} to=''>什麼是人類圖</Link>
     </li>
     <li className={style.Navitem}>
-      <Link className={style.Navlink} to=''>認識Jerome</Link>
+    <Link className={style.Navlink} to="Jerome">認識Jerome</Link>
     </li>
     <li className={style.Navitem}>
       <Link className={style.Navlink} to=''>體驗回饋</Link>

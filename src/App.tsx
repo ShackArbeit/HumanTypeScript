@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from './Layout/Layout'
+import AboutJerome from "./PageComponents/AboutJerome";
 
 
 function App() {
@@ -8,6 +9,7 @@ function App() {
      <BrowserRouter>
       <Routes>
         <Route path="/HumanTypeScript" element={<Layout />}>
+        <Route path="Jerome" element={<AboutJerome/>}/>
         </Route>
       </Routes>
     </BrowserRouter>

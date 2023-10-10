@@ -34,7 +34,7 @@ const Header = () => {
     <Link className={style.Navlink} to="Jerome">認識Jerome</Link>
     </li>
     <li className={style.Navitem}>
-      <Link className={style.Navlink} to=''>體驗回饋</Link>
+      <Link className={style.Navlink} to="feedback">體驗回饋</Link>
     </li>
     <li className={style.Navitem}>
       <Link className={style.Navlink} to=''>立即預約</Link>

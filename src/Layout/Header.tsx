@@ -25,7 +25,7 @@ const Header = () => {
    </a>
   <ul className={isOpen?style.NavMenu:style.Nav}>
     <li className={style.Navitem}>
-      <Link className={style.Navlink} to=''>首頁</Link>
+    <Link className={style.Navlink} to="">首頁</Link>
     </li>
     <li className={style.Navitem}>
       <Link className={style.Navlink} to=''>什麼是人類圖</Link>

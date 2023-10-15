@@ -28,16 +28,16 @@ const Header = () => {
     <Link className={style.Navlink} to="">首頁</Link>
     </li>
     <li className={style.Navitem}>
-      <Link className={style.Navlink} to=''>什麼是人類圖</Link>
+      <Link className={style.Navlink} to='human'>什麼是人類圖</Link>
     </li>
     <li className={style.Navitem}>
     <Link className={style.Navlink} to="Jerome">認識Jerome</Link>
     </li>
     <li className={style.Navitem}>
-      <Link className={style.Navlink} to="feedback">體驗回饋</Link>
+      <Link className={style.Navlink} to="Feedback">體驗回饋</Link>
     </li>
     <li className={style.Navitem}>
-      <Link className={style.Navlink} to=''>立即預約</Link>
+      <Link className={style.Navlink} to='booking'>立即預約</Link>
     </li>
   </ul>
   <a className={style.menuToggle}

@@ -4,6 +4,7 @@ interface JeromeData {
   id: number;
   title: string;
   content: string;
+  url:string;
 }
 
 const aboutJerome = createSlice({

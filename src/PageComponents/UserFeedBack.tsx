@@ -1,7 +1,7 @@
 import style from '../CssModules/FeedBack.module.css'
 import { useEffect} from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { setFeedbackData } from '../ToolkitComponents/FeedBack/FeedbackSlice';
+import { setData } from '../ToolkitComponents/AboutFetchData/AboutJeromeSlice';
 import { RootState } from '../ToolkitComponents/Store';
 import Box from '@mui/material/Box';
 import Container from 'react-bootstrap/Container';
@@ -21,14 +21,14 @@ const theme = createTheme({
 });
 
 const UserFeedBack = () => {
-  const datas=useSelector((state:RootState)=>state.FeedBack)
+  const datas=useSelector((state:RootState)=>state.aboutJerome)
   const dispatch=useDispatch()
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:8000/feedback/jdShare');
+        const response = await fetch('http://localhost:9000/feedback/jdShare');
         const Data = await response.json();
-        dispatch(setFeedbackData(Data))
+        dispatch(setData(Data))
       } 
       catch (error) {
         console.log(error);

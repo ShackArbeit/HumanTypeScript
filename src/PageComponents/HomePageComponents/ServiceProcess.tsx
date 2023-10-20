@@ -1,6 +1,6 @@
 import style from '../../CssModules/HomePage.module.css'
 import { useSelector, useDispatch } from 'react-redux'
-import {setServiceData} from '../../ToolkitComponents/HomePage/ServiceSlice'
+import { setData } from '../../ToolkitComponents/AboutFetchData/AboutJeromeSlice';
 import  { useEffect } from 'react';
 import { RootState } from '../../ToolkitComponents/Store';
 import Box from '@mui/material/Box';
@@ -33,14 +33,14 @@ const theme = createTheme({
     }));
 
 const ServiceProcess = () => {
-      const datas=useSelector((state:RootState)=>state.Service)
+      const datas=useSelector((state:RootState)=>state.aboutJerome)
       const dispatch=useDispatch()
       useEffect(() => {
             const fetchData = async () => {
               try {
-                const response = await fetch('http://localhost:8000/home/service');
+                const response = await fetch('http://localhost:9000/home/serviceProcess');
                 const Data = await response.json();
-                dispatch(setServiceData(Data))
+                dispatch(setData(Data))
               } 
               catch (error) {
                 console.log(error);

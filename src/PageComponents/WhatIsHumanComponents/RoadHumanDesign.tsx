@@ -5,6 +5,12 @@ import Col from 'react-bootstrap/Col';
 import { useRoadHumanDesign } from '../../ReactQueryCompoents/WhatisHumanDesign';
 
 
+interface SubpageInterface{
+  id:number,
+  title:string,
+  content:string,
+  url:string
+}
 
 export default function RoadHumanDesign() {
   const{data:datas,isLoading,error}=useRoadHumanDesign()
@@ -15,7 +21,7 @@ export default function RoadHumanDesign() {
     <Container className={style.HumanDesignWrap} fluid>
     <h1 className={style.HumanDesignMainTitle}>  看看幾種常見的通道吧 !  </h1>
     <div className={style.GelleryContainer}>
-    {datas.map((data, index) => (
+    {datas.map((data:SubpageInterface, index:number) => (
       <Container fluid key={data.id}>
         <Row className={style.GelleryRow}>
           {index % 2 === 0 ? ( 

@@ -1,10 +1,13 @@
 import { useState, createContext } from 'react';
 import {useNavigate} from 'react-router-dom';
 import Swal from 'sweetalert2';
+import { SignUpInterface } from './ContextType';
 
-export const SingUpContext=createContext()
+export const SingUpContext=createContext<SignUpInterface|undefined>(undefined)
 
-export default function SignUpProvider({children}){
+export default function SignUpProvider({children}:{
+  children:React.ReactNode
+}){
      
      const passwordPattern = /^(?=.*[A-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -13,12 +16,15 @@ export default function SignUpProvider({children}){
     const [emailValue, setEmailValue] = useState('');
     const negative=useNavigate()
     
-    const handleSubmit = async (event) => {
+    const handleSubmit = async (event:any) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        const email = data.get('email');
-        const password = data.get('password');
-        const confirmPassword = data.get('ConfirmPassword');
+        const emailValue = data.get('email');
+        const passwordValue = data.get('password');
+        const email = typeof emailValue === 'string' ? emailValue : '';
+        const password = typeof passwordValue === 'string' ? passwordValue : '';
+        const confirmPasswordValue = data.get('ConfirmPassword');
+        const confirmPassword=typeof confirmPasswordValue === 'string' ? confirmPasswordValue : '';
         if(email===''||password===''||confirmPassword===''){
           Swal.fire({
             title: '不得空白',
@@ -61,7 +67,7 @@ export default function SignUpProvider({children}){
             console.log({email,password,});
         }
         try{
-            const response= await fetch('http://localhost:8000/signUp',{
+            const response= await fetch('http://localhost:8001/signUp',{
               method:'POST',
               headers: {
                 'Content-Type': 'application/json',

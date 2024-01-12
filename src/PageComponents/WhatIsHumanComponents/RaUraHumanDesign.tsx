@@ -5,6 +5,13 @@ import Col from 'react-bootstrap/Col';
 import { useWriterHumanDesign } from '../../ReactQueryCompoents/WhatisHumanDesign';
 
 
+interface SubpageInterface{
+  id:number,
+  title:string,
+  content:string,
+  url:string
+}
+
 export default function RaUraHumanDesign() {
 
   const{data:datas,isLoading,error}=useWriterHumanDesign()
@@ -15,7 +22,7 @@ export default function RaUraHumanDesign() {
     <Container className={style.HumanDesignWrap} fluid>
     <h1 className={style.HumanDesignMainTitle}>  人類圖的前世今生 !  </h1>
     <div className={style.GelleryContainer}>
-    {datas.map((data, index) => (
+    {datas.map((data:SubpageInterface, index:number) => (
       <Container fluid key={data.id}>
         <Row className={style.GelleryRow}>
           {index % 2 === 0 ? ( 

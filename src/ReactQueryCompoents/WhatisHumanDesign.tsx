@@ -1,12 +1,17 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery  } from '@tanstack/react-query';
+
+
+
+
+
 // 內在權威=做決定方法的 Hook
 export const useAuthorHumanDesign=()=>{
       return useQuery({
             queryKey:['authorHumanDesign'],
             queryFn:
             async()=>{
-                  const response=await fetch('http://localhost:8000/human/authorHuman')
-                  const data=await response.json()
+                  const response=await fetch('http://localhost:8001/human/authorHuman')
+                  const data=await response.json() 
                   return data
             }
       })
@@ -17,8 +22,8 @@ export const useEnergyHumanDesign=()=>{
             queryKey:['energyHumanDesign'],
             queryFn:
             async()=>{
-                  const response=await fetch('http://localhost:8000/human/energyHuman')
-                  const data=await response.json()
+                  const response=await fetch('http://localhost:8001/human/energyHuman')
+                  const data= await response.json()  
                   return data
             }
       })
@@ -28,8 +33,8 @@ export const useExplainHumanDesign=()=>{
       return useQuery({
             queryKey:['explainHumanDesign'],
             queryFn:async()=>{
-                  const response=await fetch('http://localhost:8000/human/explainHuman')
-                  const data=await response.json()
+                  const response=await fetch('http://localhost:8001/human/explainHuman')
+                  const data=await response.json() 
                   return data
             }
       })
@@ -39,8 +44,8 @@ export const useHoverHumanDesing=()=>{
       return useQuery({
             queryKey:['hoverHumanDesign'],
             queryFn:async()=>{
-            const response = await fetch('http://localhost:8000/human/hoverIntroducer');
-            const data=await response.json()
+            const response = await fetch('http://localhost:8001/human/hoverIntroducer');
+            const data=await response.json() 
             return data
             }
       })
@@ -50,8 +55,8 @@ export const useWriterHumanDesign=()=>{
       return useQuery({
             queryKey:['writerHumanDesign'],
             queryFn:async()=>{
-                  const response = await fetch('http://localhost:8000/human/writerHuman');
-                  const data = await response.json()
+                  const response = await fetch('http://localhost:8001/human/writerHuman');
+                  const data = await response.json() 
                   return data
             }
       })
@@ -61,8 +66,8 @@ export const useRoadHumanDesign=()=>{
       return useQuery({
             queryKey:['roadHumanDesign'],
             queryFn:async()=>{
-                  const response = await fetch('http://localhost:8000/human/roadHuman');
-                  const data=await response.json()
+                  const response = await fetch('http://localhost:8001/human/roadHuman');
+                  const data=await response.json() 
                   return data
             }
       })
@@ -72,7 +77,7 @@ export const useRoleHumanDesign=()=>{
       return useQuery({
             queryKey:['roleHumanDesign'],
             queryFn:async()=>{
-                  const response = await fetch('http://localhost:8000/human/roleHuman');
+                  const response = await fetch('http://localhost:8001/human/roleHuman');
                   const data=await response.json()
                   return data
             }
@@ -83,8 +88,8 @@ export const useTypeHumanDesign=()=>{
       return useQuery({
             queryKey:['typeHumanDesign'],
             queryFn:async()=>{
-                  const response = await fetch('http://localhost:8000/human/talentHuman');
-                  const data=await response.json();
+                  const response = await fetch('http://localhost:8001/human/talentHuman');
+                  const data=await response.json() 
                   return data;
           }
       })
@@ -94,8 +99,8 @@ export const useCircleHumanDesign=()=>{
       return useQuery({
             queryKey:['circleHumanDesign'],
             queryFn:async()=>{
-                  const response=await fetch('http://localhost:8000/human/circleHuman')
-                  const data=await response.json();
+                  const response=await fetch('http://localhost:8001/human/circleHuman')
+                  const data=await response.json() 
                   return data;
             }
       })

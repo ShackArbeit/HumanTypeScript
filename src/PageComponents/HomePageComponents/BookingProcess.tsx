@@ -15,6 +15,13 @@ const theme = createTheme({
         },
       },
     })
+
+interface SubpageInterface{
+      id:number,
+      title:string,
+      content:string,
+      url:string
+    }
 const BookingProcess = () => {
   const { data: datas, isLoading, error } = useBooking();
   if(isLoading) return <p>Loading...</p>
@@ -27,11 +34,11 @@ const BookingProcess = () => {
       
       <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 2, sm: 6, md: 12 }}> 
-      {datas.map((data)=>(
+      {datas.map((data:SubpageInterface)=>(
              <Grid item xs={12} sm={3} md={3} key={data.id}>
               <div className={style.BookingProcessContainer} >
              <div className={style.BookingProcessItem}>
-             <img src={data.url} alt={data.id}></img>
+             <img src={data.url} alt={data.url}/>
              <div className={style.BookingProcessText}>
               <h5>{data.title}</h5>
               <span>{data.content}</span>

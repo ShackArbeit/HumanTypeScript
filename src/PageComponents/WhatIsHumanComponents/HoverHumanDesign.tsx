@@ -3,6 +3,13 @@ import Container from 'react-bootstrap/Container';
 import { useHoverHumanDesing } from '../../ReactQueryCompoents/WhatisHumanDesign';
 import {Link} from 'react-router-dom'
 
+interface SubpageInterface{
+  id:number,
+  title:string,
+  content:string,
+  url:string
+}
+
 const HoverHumanDesign = () => {
 
 const{data:datas,isLoading,error}=useHoverHumanDesing()
@@ -10,7 +17,7 @@ const{data:datas,isLoading,error}=useHoverHumanDesing()
   if(error) return <p>Error :{error.message}</p>
   return (
     <Container fluid className={style.HoverHumanDesignWarap}>
-    {datas.map((data,index)=>(
+    {datas.map((data:SubpageInterface,index:number)=>(
       <Link to={data.url} style={{cursor:'pointer'}}  key={index}>
         <div className={style.HoverHumanDesignItem}>
         <img src={`https://picsum.photos/400/400?random=${data.id}`} />

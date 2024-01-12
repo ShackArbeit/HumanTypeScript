@@ -9,8 +9,16 @@ import Typography from '@mui/material/Typography';
 import style from '../CssModules/Jerome.module.css'
 import Container from 'react-bootstrap/Container';
 
+
+interface JeromeInterface{
+  id:number,
+  title:string,
+  content:string
+}
+
 const AboutJerome = () => {
   const { data: datas, isLoading, error } = useAboutJerome(); 
+  if (!datas) return null;
   if(isLoading) return<p>Loading...</p>
   if(error) return <p>Error:{error.message}</p>
   return (
@@ -18,7 +26,7 @@ const AboutJerome = () => {
      <Container className={style.JeromeContainer} fluid>
         <h3>關於 Jerome</h3>
         <Timeline position="alternate">
-          {datas.map((data, index) => (
+          {datas.map((data:JeromeInterface, index:number) => (
             <TimelineItem className={style.JeromeTimeItem} key={index}>
               <TimelineSeparator>
                 <TimelineConnector className={style.JeromeImage} />

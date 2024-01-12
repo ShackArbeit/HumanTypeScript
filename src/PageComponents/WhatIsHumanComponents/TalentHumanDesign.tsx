@@ -5,7 +5,12 @@ import Col from 'react-bootstrap/Col';
 import { useEffect,useState} from 'react';
 import { useTypeHumanDesign } from '../../ReactQueryCompoents/WhatisHumanDesign';
 
-
+interface SubpageInterface{
+  id:number,
+  title:string,
+  content:string,
+  url:string
+}
 
 export default function TalentHumanDesign() {
   const [scrollY, setScrollY] = useState(0);
@@ -28,7 +33,7 @@ export default function TalentHumanDesign() {
     <Container className={style.HumanDesignWrap} fluid>
     <h1 className={style.HumanDesignMainTitle}>  知悉天賦比努力更重要 !  </h1>
     <div className={style.GelleryContainer}>
-    {datas.map((data, index) => (
+    {datas.map((data:SubpageInterface, index:number) => (
       <Container fluid key={data.id}>
         <Row className={style.GelleryRow}>
           {index % 2 === 0 ? ( 

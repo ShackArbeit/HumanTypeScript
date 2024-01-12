@@ -4,6 +4,14 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { useRoleHumanDesign } from '../../ReactQueryCompoents/WhatisHumanDesign';
 
+
+interface SubpageInterface{
+  id:number,
+  title:string,
+  content:string,
+  url:string
+}
+
 export default function RoleHumanDesign() {
   const{data:datas,isLoading,error}=useRoleHumanDesign()
   if(isLoading) return <p>Loading...</p>
@@ -13,7 +21,7 @@ export default function RoleHumanDesign() {
     <Container className={style.HumanDesignWrap} fluid>
     <h1 className={style.HumanDesignMainTitle}>  意識到你是什麼 !  </h1>
     <div className={style.GelleryContainer}>
-    {datas.map((data, index) => (
+    {datas.map((data:SubpageInterface, index:number) => (
       <Container fluid key={data.id}>
         <Row className={style.GelleryRow}>
           {index % 2 === 0 ? ( 

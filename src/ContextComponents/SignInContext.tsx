@@ -1,10 +1,13 @@
 import { useState, createContext,useEffect } from 'react';
 import {useNavigate} from 'react-router-dom';
 import Swal from 'sweetalert2';
+import { SignInInterface } from './ContextType';
 
-export const SignInContext=createContext()
+export const SignInContext=createContext<SignInInterface|undefined>(undefined)
 
-export default function SignInProvider({children}){
+export default function SignInProvider({children}:{
+  children:React.ReactNode
+}){
       const passwordPattern = /^(?=.*[A-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       const [open, setOpen] = useState(true);
@@ -14,11 +17,13 @@ export default function SignInProvider({children}){
       const StorageEmail=localStorage.getItem('rememberedEmail')
       const StoragePassword=localStorage.getItem('remeberMePassword')
       const negative=useNavigate()
-      const handleSubmit = async (event) => {
+      const handleSubmit = async (event:any) => {
             event.preventDefault();
             const data = new FormData(event.currentTarget);
-            const email = data.get('email');
-            const password = data.get('password');
+            const emailValue = data.get('email');
+            const passwordValue = data.get('password');
+            const email = typeof emailValue === 'string' ? emailValue : '';
+            const password = typeof passwordValue === 'string' ? passwordValue : '';
     
             if (email==='' || password==='') {
                   Swal.fire({
@@ -53,7 +58,7 @@ export default function SignInProvider({children}){
               console.log({email,password,});
           }
           try{
-            const response=await fetch('http://localhost:8000/directSignIn',{
+            const response=await fetch('http://localhost:8001/directSignIn',{
               method:'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -69,7 +74,7 @@ export default function SignInProvider({children}){
                 icon: 'success',
                 confirmButtonText: '了解'
               })
-              localStorage.setItem('isLoggin', true);
+              localStorage.setItem('isLoggin', String(true));
               setIsLoggin(true)
               negative('/HumanDesign/bookingAfterSignIn')
             }else{
@@ -86,10 +91,12 @@ export default function SignInProvider({children}){
         }      
   };
         
-      const handleSubmitResendPassword= async(event)=>{
+      const handleSubmitResendPassword= async(event:any)=>{
             event.preventDefault();
             const data = new FormData(event.currentTarget);
-            const email = data.get('email');
+            const emailValue = data.get('email');
+            const email = typeof emailValue === 'string' ? emailValue : '';
+            
             if (email==='') {
               Swal.fire({
                 title: '不得空白',
@@ -110,7 +117,7 @@ export default function SignInProvider({children}){
             return 
           }
           try{
-            const response=await fetch('http://localhost:8000/resendPassword',{
+            const response=await fetch('http://localhost:8001/resendPassword',{
               method:'POST',
               headers: {
                 'Content-Type': 'application/json',

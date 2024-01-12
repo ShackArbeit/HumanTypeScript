@@ -4,14 +4,14 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import { orange, purple } from '@mui/material/colors';
 import { Link } from 'react-router-dom';
-import {  BluetoothAudioOutlined } from '@mui/icons-material';
+
 
 
 
 
 const ColorButton = styled(Button)(({ theme }) => ({
   color: theme.palette.getContrastText(purple[500]),
-  backgroundColor: BluetoothAudioOutlined[500],
+  backgroundColor: theme.palette.primary.main, 
   '&:hover': {
     backgroundColor: orange[500],
   },

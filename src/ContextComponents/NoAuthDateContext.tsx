@@ -2,44 +2,63 @@ import { useState, createContext } from 'react';
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn'; 
 import Swal from 'sweetalert2';
-export const NoAuthDateTimeContext = createContext();
+import { NoAuthDateTimeInterface } from './ContextType';
 import {useNavigate } from 'react-router-dom'
 
 
+export const NoAuthDateTimeContext = createContext<NoAuthDateTimeInterface|undefined>(undefined);
 
-const options = {
- 個人解析: ['60分鐘 5,000 元', '120 分鐘 9,000 元'],
- 多人解析: ['60分鐘 7,000 元', '120 分鐘 12,000 元'],
- 親子解析: ['60分鐘 8,000 元', '120 分鐘 14,000 元'],
- 團體解析: ['60分鐘 9,000 元', '120 分鐘 15,000 元'],
+
+// const options = {
+//  個人解析: ['60分鐘 5,000 元', '120 分鐘 9,000 元'],
+//  多人解析: ['60分鐘 7,000 元', '120 分鐘 12,000 元'],
+//  親子解析: ['60分鐘 8,000 元', '120 分鐘 14,000 元'],
+//  團體解析: ['60分鐘 9,000 元', '120 分鐘 15,000 元'],
+// };
+
+const options: {
+  個人解析: string[];
+  多人解析: string[];
+  親子解析: string[];
+  團體解析: string[];
+} = {
+  個人解析: ['60分鐘 5,000 元', '120 分鐘 9,000 元'],
+  多人解析: ['60分鐘 7,000 元', '120 分鐘 12,000 元'],
+  親子解析: ['60分鐘 8,000 元', '120 分鐘 14,000 元'],
+  團體解析: ['60分鐘 9,000 元', '120 分鐘 15,000 元'],
 };
+type OptionKey = '個人解析' | '多人解析' | '親子解析' | '團體解析';
 
 
-export default function NoAuthDateTimeProvider({ children }) {
+
+export default function NoAuthDateTimeProvider({ children }:{
+  children:React.ReactNode
+}) {
   const negative=useNavigate()
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
  const [email,setEmail]=useState('')
- const [selectDateTime, setSelectDateTime] = useState([]);
+ const [selectDateTime, setSelectDateTime] = useState<Date[]>([]);
  const [showGoButton,setShowGoButton]=useState(false)
  const [showOriginButton,setShowOriginButton]=useState(false)
- const [firstValue, setFirstValue] = useState(null);
- const [secondOptions, setSecondOptions] = useState([]);
- const [secondItem,setSecondItem]=useState(null);
+ const [firstValue, setFirstValue] = useState('');
+ const [secondOptions, setSecondOptions] = useState<string[]>([]);
+ const [secondItem,setSecondItem]=useState('');
+ 
 
 
  // 選取預約項目第一分項的 function 
- const handleFirstAutocompleteChange = (event, newValue) => {
-   setFirstValue(newValue);
-   setSecondOptions(options[newValue] || []);
- };
+ const handleFirstAutocompleteChange = ( newValue:OptionKey) => {
+  setFirstValue(newValue);
+  setSecondOptions(options[newValue] || []);
+};
  // 選取預約項目第二分項的 function 
- const handleSecondAutocompleteChange=(event,newItem)=>{
-     setSecondItem(newItem)
-    setSecondOptions(options[newItem] || []);
- }
+ const handleSecondAutocompleteChange=(newItem:OptionKey)=>{
+  setSecondItem(newItem)
+  setSecondOptions(options[newItem] || []);
+}
  // 選取項目的 function 
-  const handleSelectDateTime = (newDateTime) => {
-    setSelectDateTime(newDateTime);
+  const handleSelectDateTime = (newDateTime:Date[]) => {
+      setSelectDateTime(newDateTime);
   };
   // 若選擇不想選的項目、日期時間後想要重新選取的 fucntion 
   const handleResetBooking=()=>{
@@ -50,12 +69,15 @@ export default function NoAuthDateTimeProvider({ children }) {
       }
   }
   // 選取完成預約項目後的送出的 function 
-  const handleSendDateTime = async (event) => {
+  const handleSendDateTime = async (event: { preventDefault: () => void; }) => {
     const currentDate = dayjs();
     dayjs.locale('zh-cn');
-    const selectedDate = dayjs(selectDateTime);
-    const formattedDate = selectedDate.format(' YYYY   /   MM   /   DD    A hh:mm');
+    const selectDateTime: Date[] = [/* your array of Date objects */];
+    const selectedDate = selectDateTime.map(date => dayjs(date));
+    const formattedDate = selectedDate.length > 0 ? selectedDate[0].format('YYYY / MM / DD A hh:mm') : 'No date selected';
     const minimumReservationDate = currentDate.add(3, 'day');
+    const isAnyDateBeforeCurrentDate = selectedDate.some(date => date.isBefore(currentDate, 'day'));
+    const isAnyDateMinReservationDate=selectedDate.some(date => date.add(3, 'day'));
     // 確保 Email 格式正確 
     if(!emailRegex.test(email)){
       Swal.fire({
@@ -67,7 +89,7 @@ export default function NoAuthDateTimeProvider({ children }) {
       return 
     }
     // 防止選取過去的日期
-       if (selectedDate.isBefore(currentDate, 'day')) {
+       if (isAnyDateBeforeCurrentDate) {
         Swal.fire({
           title: '選取錯誤',
           text: '你所選取的日期已經過去，請重新選擇',
@@ -91,7 +113,7 @@ export default function NoAuthDateTimeProvider({ children }) {
         return; 
       }
         // 只接受三天前的預約
-   if (selectedDate.isBefore(minimumReservationDate, 'day')) {
+   if (isAnyDateMinReservationDate) {
      Swal.fire({
       title: '選取錯誤',
       text: `抱歉，無法接受當日預約，只接受${minimumReservationDate.format('YYYY年MM月DD日')}起的預約`,
@@ -104,7 +126,7 @@ export default function NoAuthDateTimeProvider({ children }) {
     // 若都不是前面用前端判斷的例外情形就進入後端 Api 判斷的邏輯
   try {
       // 先向後端 Api 發送 Post 請求，將資料放入資料庫內
-      const response = await fetch('http://localhost:8000/noAuthBooking', {
+      const response = await fetch('http://localhost:8001/noAuthBooking', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -156,7 +178,7 @@ export default function NoAuthDateTimeProvider({ children }) {
     const bookingIdToDelete = localStorage.getItem('bookingIdToDelete');
     const userConfirmed = window.confirm('請確定要刪除預約嗎 ?');
      if (userConfirmed) {
-       const response = await fetch(`http://localhost:8000/noAuthDelete/${bookingIdToDelete}`, {
+       const response = await fetch(`http://localhost:8001/noAuthDelete/${bookingIdToDelete}`, {
          method: 'DELETE',
          headers: {
            'Content-Type': 'application/json',

@@ -1,18 +1,21 @@
 import { createContext} from 'react';
 import Swal from 'sweetalert2';
 import {useNavigate} from 'react-router-dom'
+import { SendEmailInterface } from './ContextType';
 
 
-export const SendEmailContext=createContext()
+export const SendEmailContext=createContext<SendEmailInterface|undefined>(undefined)
 
-export default function SendEmailProvider({ children }){
+export default function SendEmailProvider({ children }:{
+    children:React.ReactNode
+}){
     
        const negative=useNavigate()
         const handleSendEamil=async ()=>{
             try{
                 const userConfirmed = window.confirm('確認後將無法再刪除預約，是否已確定此次預約?');
             if(userConfirmed){
-                const response=await fetch('http://localhost:8000/sendEmail',{
+                const response=await fetch('http://localhost:80001/sendEmail',{
                     method: 'POST',
                     headers: {
                       'Content-Type': 'application/json',

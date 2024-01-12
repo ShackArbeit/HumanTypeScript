@@ -20,7 +20,7 @@ const EmailJormen = () => {
     const[name,setName]=useState('')
     const[email,setEmail]=useState('')
     const[message,setMessage]=useState('')
-    const handleSubmit=(e)=>{
+    const handleSubmit=(e: { preventDefault: () => void; })=>{
         e.preventDefault();
         const serviceId = 'service_qdtfj5q'
         const templateId= 'template_02dyado'
@@ -97,8 +97,8 @@ const EmailJormen = () => {
               autoFocus
             />
             <textarea
-            cols='100'
-            rows='10'
+            cols={100}
+            rows={10}
             value={message}
             onChange={(e)=>setMessage(e.target.value)}
             style={{

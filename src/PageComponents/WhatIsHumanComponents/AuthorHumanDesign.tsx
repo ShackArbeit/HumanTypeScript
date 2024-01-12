@@ -5,6 +5,15 @@ import Col from 'react-bootstrap/Col';
 import { useAuthorHumanDesign } from '../../ReactQueryCompoents/WhatisHumanDesign';
 import { useEffect,useState} from 'react';
 
+
+
+interface SubpageInterface{
+  id:number,
+  title:string,
+  content:string,
+  url:string
+}
+
 export default function AuthorHumanDesign() {
   const [scrollY, setScrollY] = useState(0);
 
@@ -28,7 +37,7 @@ export default function AuthorHumanDesign() {
     <Container className={style.HumanDesignWrap} fluid>
     <h1 className={style.HumanDesignMainTitle}>  傾聽後再作決定吧 !  </h1>
     <div className={style.GelleryContainer}>
-    {datas.map((data, index) => (
+    {datas.map((data: SubpageInterface, index:number) => (
       <Container fluid key={data.id}>
         <Row className={style.GelleryRow}>
           {index % 2 === 0 ? ( 

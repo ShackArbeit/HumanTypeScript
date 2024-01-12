@@ -4,7 +4,12 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { useCircleHumanDesign } from '../../ReactQueryCompoents/WhatisHumanDesign';
 
-
+interface SubpageInterface{
+  id:number,
+  title:string,
+  content:string,
+  url:string
+}
 
 export default function CircileHumanDesign() {
 
@@ -16,7 +21,7 @@ export default function CircileHumanDesign() {
     <Container className={style.HumanDesignWrap} fluid>
     <h1 className={style.HumanDesignMainTitle}>  輪迴交叉的前世今生 !  </h1>
     <div className={style.GelleryContainer}>
-    {datas.map((data, index) => (
+    {datas.map((data:SubpageInterface, index:number) => (
       <Container fluid key={data.id}>
         <Row className={style.GelleryRow}>
           {index % 2 === 0 ? ( 

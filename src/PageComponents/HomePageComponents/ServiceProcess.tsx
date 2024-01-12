@@ -9,7 +9,16 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import { orange, purple } from '@mui/material/colors';
 import { Link } from 'react-router-dom';
-import { Bluetooth } from '@mui/icons-material';
+
+
+
+interface SubpageInterface{
+  id:number,
+  title:string,
+  content:string,
+  url:string
+}
+
 
 
 const theme = createTheme({
@@ -25,7 +34,7 @@ const theme = createTheme({
     })
     const ColorButton = styled(Button)(({ theme }) => ({
       color: theme.palette.getContrastText(purple[500]),
-      backgroundColor: Bluetooth[500],
+      backgroundColor: theme.palette.primary.main, 
       '&:hover': {
         backgroundColor: orange[500],
       },
@@ -44,7 +53,7 @@ const ServiceProcess = () => {
    <h1 className={style.serviceTitle} >解析項目</h1>
    <Box sx={{ flexGrow: 1 }}>
    <Grid container spacing={{ xs: 1, md: 2}} columns={{ xs: 2, sm: 6, md: 12 }}>
-   {datas.map((data)=>(
+   {datas.map((data:SubpageInterface)=>(
             <Grid item xs={12} sm={3} md={3} key={data.id}>
             <div className={style.serviceContainer}>
                <div className={style.serviceItem}>

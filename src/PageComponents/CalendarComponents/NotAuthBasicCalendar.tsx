@@ -10,26 +10,24 @@ import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker
 import dayjs from 'dayjs';
 dayjs.locale('zh-cn');
 import Button from '@mui/material/Button';
-import { DateTimeContext } from '../../ContextComponents/DataTimeContext';
-import { SendEmailContext } from '../../ContextComponents/SendEmailContext';
+import { NoAuthDateTimeContext } from '../../ContextComponents/NoAuthDateContext';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Autocomplete from '@mui/material/Autocomplete';
 
 
 
-
 const options = {
-  '個人解析': ['60分鐘 5,000 元', '120 分鐘 9,000 元'],
-  '多人解析': ['60分鐘 7,000 元', '120 分鐘 12,000 元'],
-  '親子解析': ['60分鐘 8,000 元', '120 分鐘 14,000 元'],
-  '團體解析': ['60分鐘 9,000 元', '120 分鐘 15,000 元'],
+  個人解析: {'60分鐘 5,000 元': '120 分鐘 9,000 元'},
+  多人解析: {'60分鐘 7,000 元':'120 分鐘 12,000 元'},
+  親子解析: {'60分鐘 8,000 元':'120 分鐘 14,000 元'},
+  團體解析: {'60分鐘 9,000 元':'120 分鐘 15,000 元'},
 };
  
 
 
 
-export default function BasicCalendar() {
+export default function NotAuthBasicCalendar() {
   const isDesktop = useMediaQuery('(min-width:576px)');
   const isMobile=useMediaQuery('(max-width:576px');
   const {
@@ -45,15 +43,25 @@ export default function BasicCalendar() {
     handleDeleteFirstBooking,
     handleResetBooking,
     showOriginButton,
-  }=useContext(DateTimeContext)
-  const{handleSendEamil}=useContext(SendEmailContext)
+    email,
+    setEmail,
+    handleSendEmail
+  }=useContext(NoAuthDateTimeContext )
+  
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
     <div className={style.BasicCalendarContainer}>
-    <h3 style={{marginBottom:"1rem"}}>請點選日期及項目</h3>
+    <h3 style={{marginBottom:"1rem"}}>請先輸入 Email 後點選日期及項目</h3>
     {isDesktop?(
     <div className={style.ItemContainer}>
         <DemoItem >
+        <input 
+        type='email'
+        placeholder='請輸入Email'
+        value={email}
+        onChange={(e)=>setEmail(e.target.value)}
+        className={style.EmailInput}
+        />
         <DesktopDateTimePicker 
         sx={{
           width:"350px",
@@ -76,7 +84,7 @@ export default function BasicCalendar() {
         '&:hover': {
           border:'2px solid #1192ff;'
         }}}
-      id="free-solo-demo"
+      // id="free-solo-demo"
       freeSolo
       options={Object.keys(options)}
       value={firstValue}
@@ -95,7 +103,7 @@ export default function BasicCalendar() {
           '&:hover': {
             border:'2px solid #1192ff;'
           }}}
-        id="free-solo-2-demo"
+        // id="free-solo-2-demo"
         disableClearable
         options={secondOptions}
         value={secondItem}
@@ -173,7 +181,7 @@ export default function BasicCalendar() {
             <Button
               variant="contained"
               size="large"
-              onClick={handleSendEamil}
+              onClick={handleSendEmail}
               sx={{
                 fontWeight: 900,
                 fontSize: '20px',
@@ -184,7 +192,7 @@ export default function BasicCalendar() {
                 },
               }}
             >
-              確認此次預約
+              確認預約並返回首頁
             </Button>
         </>
       )}
@@ -229,6 +237,13 @@ export default function BasicCalendar() {
       {isMobile?(
         <div className={style.ItemContainer}>
             <DemoItem >
+            <input 
+              type='email'
+              placeholder='請輸入Email'
+              value={email}
+              onChange={(e)=>setEmail(e.target.value)}
+              className={style.EmailInput}
+            />
             <MobileDateTimePicker  
             sx={{
               width:"350px",
@@ -347,11 +362,10 @@ export default function BasicCalendar() {
               >
                 刪除此次預約
               </Button>
-              <Link to="/HumanDesign/bookingAfterSignIn/checkBooking">
                 <Button
-                  onClick={handleSendEamil}
                   variant="contained"
                   size="large"
+                  onClick={handleSendEmail}
                   sx={{
                     fontWeight: 900,
                     fontSize: '20px',
@@ -362,9 +376,8 @@ export default function BasicCalendar() {
                     },
                   }}
                 >
-                  確認預約
+                  確認預約並返回首頁
                 </Button>
-              </Link>
               </div>
             </>
           )}

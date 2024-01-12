@@ -1,3 +1,4 @@
+import React from 'react'
 import style from '../../CssModules/HomePage.module.css'
 
 const FullBadge = () => {

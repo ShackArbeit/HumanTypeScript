@@ -13,7 +13,7 @@ import  { useEffect,useState} from 'react';
 import {Link} from 'react-router-dom'
 
 
-const EntraceBooking = () => {
+const NotAuthEntraceBooking = () => {
     const isDesktop = useMediaQuery('(min-width:576px)');
     const isMobile=useMediaQuery('(max-width:576px');
     const[dataOne,setDataOne]=useState([])
@@ -116,7 +116,7 @@ const EntraceBooking = () => {
       </Card>
         </div>
         <div className={style.bookingItemsButtonContainer}>
-        <Link to="calendar" >
+        <Link to="notAuthCalendar" >
           <button className={style.bookingItemsButton}>   
           <FontAwesomeIcon icon={faCalendar} className={style.bookingButtonIcon}/>
           <p>預約</p>  
@@ -185,7 +185,7 @@ const EntraceBooking = () => {
               </Row>
               <Row>
                 <Button variant="success"  className={style.isMobileButton}>
-                <Link to="calendar" style={{color:"white"}}>
+                <Link to="notAuthCalendar" style={{color:"white"}}>
                     <div>
                     <FontAwesomeIcon icon={faCalendar}  style={{width:"15px",height:"15px"}}/>
                         <span >預約</span>  
@@ -201,4 +201,4 @@ const EntraceBooking = () => {
   );
 };
 
-export default EntraceBooking;
+export default  NotAuthEntraceBooking

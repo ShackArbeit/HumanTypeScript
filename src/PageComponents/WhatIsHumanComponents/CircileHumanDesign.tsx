@@ -2,18 +2,19 @@ import style from '../../CssModules/HumanDesignDetail.module.css'
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { useWriterHumanDesign } from '../../ReactQueryCompoents/WhatisHumanDesign';
+import { useCircleHumanDesign } from '../../ReactQueryCompoents/WhatisHumanDesign';
 
 
-export default function RaUraHumanDesign() {
 
-  const{data:datas,isLoading,error}=useWriterHumanDesign()
+export default function CircileHumanDesign() {
+
+  const{data:datas,isLoading,error}=useCircleHumanDesign()
   if(isLoading) return <p>Loading...</p>
   if(error) return <p>Error :{error.message}</p>
 
   return (
     <Container className={style.HumanDesignWrap} fluid>
-    <h1 className={style.HumanDesignMainTitle}>  人類圖的前世今生 !  </h1>
+    <h1 className={style.HumanDesignMainTitle}>  輪迴交叉的前世今生 !  </h1>
     <div className={style.GelleryContainer}>
     {datas.map((data, index) => (
       <Container fluid key={data.id}>

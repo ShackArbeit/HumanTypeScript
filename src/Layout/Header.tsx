@@ -6,18 +6,6 @@ import Swal from 'sweetalert2';
 import { DateTimeContext } from '../ContextComponents/DataTimeContext';
 
 
-declare module 'sweetalert2' {
-  interface Swal {
-    fire: (options: any) => Promise<any>;
-  }
-
-  const swal: Swal;
-  export = swal;
-}
-
-
-
-
 const Header = () => {
   
   const[isOpen,setIsOpen]=useState(false)
@@ -119,7 +107,7 @@ const Header = () => {
              </Link>
           </li>
             <li className={style.Navitem}>
-              <Link to='' className={style.Navlink} 
+              <Link className={style.Navlink} 
               onClick={handleLogOut}
               >
                 登出

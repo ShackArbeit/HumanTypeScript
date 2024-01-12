@@ -4,18 +4,18 @@ import 'dayjs/locale/zh-cn';
 import Swal from 'sweetalert2';
 import {useNavigate} from 'react-router-dom'
 
-export const DateTimeContext = createContext();
+export const ReDateTimeContext = createContext();
 
 
 const options = {
- 個人解析: ['60分鐘 5,000 元', '120 分鐘 9,000 元'],
- 多人解析: ['60分鐘 7,000 元', '120 分鐘 12,000 元'],
- 親子解析: ['60分鐘 8,000 元', '120 分鐘 14,000 元'],
- 團體解析: ['60分鐘 9,000 元', '120 分鐘 15,000 元'],
+  個人解析: ['60分鐘 5,000 元', '120 分鐘 9,000 元'],
+  多人解析: ['60分鐘 7,000 元', '120 分鐘 12,000 元'],
+  親子解析: ['60分鐘 8,000 元', '120 分鐘 14,000 元'],
+  團體解析: ['60分鐘 9,000 元', '120 分鐘 15,000 元'],
 };
 
 
-export default function DateTimeProvider({ children }) {
+export default function ReDateTimeProvider({ children }) {
  const navigate=useNavigate()
  const [selectDateTime, setSelectDateTime] = useState([]);
  const[showGoButton,setShowGoButton]=useState(false)
@@ -24,7 +24,6 @@ export default function DateTimeProvider({ children }) {
  const [secondOptions, setSecondOptions] = useState([]);
  const [secondItem,setSecondItem]=useState(null);
  const [notbooking,setNotbooking]=useState(false)
- const [bookingIdToDelete, setBookingIdToDelete] = useState('');
 
  // 選取預約項目第一分項的 function 
  const handleFirstAutocompleteChange = (event, newValue) => {
@@ -46,6 +45,8 @@ export default function DateTimeProvider({ children }) {
             setSelectDateTime([])
             setFirstValue('');
             setSecondItem('');
+            // setFirstValue([]);
+            // setSecondItem([]);
       }
   }
   // 選取完成預約項目後的送出的 function 
@@ -75,10 +76,10 @@ export default function DateTimeProvider({ children }) {
         })
         return;
       }
-      // if (selectDateTime && selectDateTime.length > 0 && (firstValue==='' || secondItem ==='')) {
-      //  alert('你尚未選取任何項目！');
-      //   return; 
-      // }
+      if (selectDateTime && selectDateTime.length > 0 && (firstValue==='' || secondItem ==='')) {
+       alert('你尚未選取任何項目！');
+        return; 
+      }
         // 只接受三天前的預約
    if (selectedDate.isBefore(minimumReservationDate, 'day')) {
      Swal.fire({
@@ -112,15 +113,15 @@ export default function DateTimeProvider({ children }) {
           icon: 'success',
           confirmButtonText: '了解'
         })
-        console.log(responseData)
-        console.log(responseData.id)
-        setBookingIdToDelete(responseData.id);
+
+        localStorage.setItem('bookingIdToDelete', responseData.id);
         setShowGoButton(true)
         setShowOriginButton(false); 
-        setNotbooking(!notbooking);
+        // setNotbooking(!notbooking)
       // 這裡透過後端的 Api 先比較所要放入的資料時間點是否存在已經在 MongoDB 資料庫內所存放的時間點之前後
       // 90 分鐘的區間內
       } else {
+      
         // responseData 是 status 為 400 時所返回的物件，並透過解構賦值存放在變數 Year,Month,Day,Hour,Minute 中
           const { Year, Month, Day, Hour, Minute } = responseData;
         // 設定前端要 Alert 訊息的變數，將前後 90 分鐘的區間透過 day.js 做計算
@@ -145,15 +146,16 @@ export default function DateTimeProvider({ children }) {
  // 刪除預約的 function 
  const handleDeleteFirstBooking = async () => {
    try {
+    const bookingIdToDelete = localStorage.getItem('bookingIdToDelete');
     const userConfirmed = window.confirm('請確定要刪除預約嗎 ?');
      if (userConfirmed) {
-    
+      console.log('Deleting booking with ID:', bookingIdToDelete);
        const response = await fetch(`http://localhost:8000/deleteBooking/${bookingIdToDelete}`, {
          method: 'DELETE',
          headers: {
            'Content-Type': 'application/json',
          },
-         body: JSON.stringify({}),
+        body: JSON.stringify({}),
        });
        const responseData = await response.json();
        console.log(responseData);
@@ -164,9 +166,12 @@ export default function DateTimeProvider({ children }) {
           icon: 'success',
           confirmButtonText: '了解'
         })
+        localStorage.removeItem('bookingIdToDelete')
          setSelectDateTime([])
          setFirstValue('');
          setSecondItem('');
+        //  setFirstValue([]);
+        //  setSecondItem([]);
          setShowOriginButton(true);
          setNotbooking(true)
        } else {
@@ -213,7 +218,7 @@ export default function DateTimeProvider({ children }) {
 };
  
   return (
-    <DateTimeContext.Provider value={{ 
+    <ReDateTimeContext.Provider value={{ 
      selectDateTime, 
      handleSelectDateTime,
      handleSendDateTime,
@@ -223,6 +228,10 @@ export default function DateTimeProvider({ children }) {
      secondOptions,
      handleFirstAutocompleteChange,
      secondItem,
+     setSelectDateTime,
+     setFirstValue,
+     setSecondItem,
+     setShowGoButton,
      handleSecondAutocompleteChange,
      handleDeleteFirstBooking,
      handleResetBooking,
@@ -231,6 +240,7 @@ export default function DateTimeProvider({ children }) {
      handleConfirmBooking
    }}>
       {children}
-    </DateTimeContext.Provider>
+    </ReDateTimeContext.Provider>
     )
   }
+

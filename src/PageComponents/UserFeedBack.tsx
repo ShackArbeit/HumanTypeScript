@@ -1,8 +1,5 @@
-import style from '../CssModules/FeedBack.module.css'
-import { useEffect} from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { setData } from '../ToolkitComponents/AboutFetchData/AboutJeromeSlice';
-import { RootState } from '../ToolkitComponents/Store';
+import { useUserFeedBack } from '../ReactQueryCompoents/UserFeedBackQuery';
+import style from '../CssModules/FeedBack.module.css';
 import Box from '@mui/material/Box';
 import Container from 'react-bootstrap/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -12,7 +9,7 @@ const theme = createTheme({
   breakpoints: {
     values: {
       xs: 0,
-      sm: 550, 
+      sm: 500,
       md: 768,
       lg: 1280,
       xl: 1920,
@@ -21,32 +18,21 @@ const theme = createTheme({
 });
 
 const UserFeedBack = () => {
-  const datas=useSelector((state:RootState)=>state.aboutJerome)
-  const dispatch=useDispatch()
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('http://localhost:9000/feedback/jdShare');
-        const Data = await response.json();
-        dispatch(setData(Data))
-      } 
-      catch (error) {
-        console.log(error);
-      }
-    };
-    fetchData();
-  }, []);
+  const { data: datas, isLoading, error } = useUserFeedBack();
+  if(isLoading) return <p>Loading...</p>
+  if(error) return <p>Error:{error.message}</p>
   return (
     <ThemeProvider theme={theme}>
       <Container fluid className={style.userContainer}>
-       <div className={style.jdContainer}>
-       <h2 className={style.jdTitle}>JKの身心靈遊園車</h2>
-      <h5>人類圖分析師Jerome
-          和職場引導師Kevin<br/>
-          陪伴你在不預期的人生旅程中
-          順流而行，開拓生命的無限可能！
-      ​</h5>
-      <Box sx={{ flexGrow: 1 }}>
+        <div className={style.jdContainer}>
+          <h2 className={style.jdTitle}>JKの身心靈遊園車</h2>
+          <h5>
+            人類圖分析師Jerome 和職場引導師Kevin
+            <br />
+            陪伴你在不預期的人生旅程中
+            順流而行，開拓生命的無限可能！
+          </h5>
+          <Box sx={{ flexGrow: 1 }}>
             <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 2, sm: 6, md: 12 }}>
               {datas.map((data) => (
                 <Grid item xs={12} sm={3} md={3} key={data.id}>
@@ -56,7 +42,9 @@ const UserFeedBack = () => {
                       <div className={style.jdCardDetail}>
                         <div className={style.jdCardTitle}>{data.title}</div>
                         <p>{data.content}</p>
-                        <a href="#!">觀看影片</a>
+                        <a href={data.url}  target="_blank"
+                        className={style.jdCardDetailLink}
+                        >觀看影片</a>
                       </div>
                     </div>
                   </div>
@@ -64,10 +52,10 @@ const UserFeedBack = () => {
               ))}
             </Grid>
           </Box>
-    </div>
-    </Container>
+        </div>
+      </Container>
     </ThemeProvider>
-  )
-}
+  );
+};
 
-export default UserFeedBack
+export default UserFeedBack;

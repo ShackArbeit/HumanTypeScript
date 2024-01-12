@@ -2,9 +2,9 @@ import { useState, createContext } from 'react';
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn'; 
 import Swal from 'sweetalert2';
-import {useNavigate} from 'react-router-dom'
+export const NoAuthDateTimeContext = createContext();
+import {useNavigate } from 'react-router-dom'
 
-export const DateTimeContext = createContext();
 
 
 const options = {
@@ -15,16 +15,17 @@ const options = {
 };
 
 
-export default function DateTimeProvider({ children }) {
- const navigate=useNavigate()
+export default function NoAuthDateTimeProvider({ children }) {
+  const negative=useNavigate()
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+ const [email,setEmail]=useState('')
  const [selectDateTime, setSelectDateTime] = useState([]);
- const[showGoButton,setShowGoButton]=useState(false)
+ const [showGoButton,setShowGoButton]=useState(false)
  const [showOriginButton,setShowOriginButton]=useState(false)
  const [firstValue, setFirstValue] = useState(null);
  const [secondOptions, setSecondOptions] = useState([]);
  const [secondItem,setSecondItem]=useState(null);
- const [notbooking,setNotbooking]=useState(false)
- const [bookingIdToDelete, setBookingIdToDelete] = useState('');
+
 
  // 選取預約項目第一分項的 function 
  const handleFirstAutocompleteChange = (event, newValue) => {
@@ -34,7 +35,7 @@ export default function DateTimeProvider({ children }) {
  // 選取預約項目第二分項的 function 
  const handleSecondAutocompleteChange=(event,newItem)=>{
      setSecondItem(newItem)
-     setSecondOptions(options[newItem] || []);
+    setSecondOptions(options[newItem] || []);
  }
  // 選取項目的 function 
   const handleSelectDateTime = (newDateTime) => {
@@ -42,10 +43,10 @@ export default function DateTimeProvider({ children }) {
   };
   // 若選擇不想選的項目、日期時間後想要重新選取的 fucntion 
   const handleResetBooking=()=>{
-      if(selectDateTime ||firstValue || secondItem ){
+      if(selectDateTime && firstValue && secondItem){
             setSelectDateTime([])
             setFirstValue('');
-            setSecondItem('');
+            setSecondItem('')
       }
   }
   // 選取完成預約項目後的送出的 function 
@@ -55,6 +56,16 @@ export default function DateTimeProvider({ children }) {
     const selectedDate = dayjs(selectDateTime);
     const formattedDate = selectedDate.format(' YYYY   /   MM   /   DD    A hh:mm');
     const minimumReservationDate = currentDate.add(3, 'day');
+    // 確保 Email 格式正確 
+    if(!emailRegex.test(email)){
+      Swal.fire({
+        title: '格式錯誤',
+        text: '電子信箱格式不符合要求，請重新輸入 !',
+        icon: 'error',
+        confirmButtonText: '了解'
+      })
+      return 
+    }
     // 防止選取過去的日期
        if (selectedDate.isBefore(currentDate, 'day')) {
         Swal.fire({
@@ -75,10 +86,10 @@ export default function DateTimeProvider({ children }) {
         })
         return;
       }
-      // if (selectDateTime && selectDateTime.length > 0 && (firstValue==='' || secondItem ==='')) {
-      //  alert('你尚未選取任何項目！');
-      //   return; 
-      // }
+      if (selectDateTime && selectDateTime.length > 0 && (firstValue==='' || secondItem ==='')) {
+       alert('你尚未選取任何項目！');
+        return; 
+      }
         // 只接受三天前的預約
    if (selectedDate.isBefore(minimumReservationDate, 'day')) {
      Swal.fire({
@@ -93,17 +104,16 @@ export default function DateTimeProvider({ children }) {
     // 若都不是前面用前端判斷的例外情形就進入後端 Api 判斷的邏輯
   try {
       // 先向後端 Api 發送 Post 請求，將資料放入資料庫內
-      const response = await fetch('http://localhost:8000/saveDateTimeAndItem', {
+      const response = await fetch('http://localhost:8000/noAuthBooking', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ selectDateTime,firstValue, secondItem}),
+        body: JSON.stringify({ selectDateTime,firstValue, secondItem,email}),
       });
       // 將資料 JSON 格式化
       const responseData = await response.json();
       console.log(responseData)
-      console.log(responseData.id)
       // 若是成功放入資料庫則返回放入成功的訊息並 Alert 出來
       if (responseData.success) {
         Swal.fire({
@@ -112,15 +122,13 @@ export default function DateTimeProvider({ children }) {
           icon: 'success',
           confirmButtonText: '了解'
         })
-        console.log(responseData)
-        console.log(responseData.id)
-        setBookingIdToDelete(responseData.id);
+        localStorage.setItem('bookingIdToDelete', responseData.id);
         setShowGoButton(true)
         setShowOriginButton(false); 
-        setNotbooking(!notbooking);
       // 這裡透過後端的 Api 先比較所要放入的資料時間點是否存在已經在 MongoDB 資料庫內所存放的時間點之前後
       // 90 分鐘的區間內
       } else {
+      
         // responseData 是 status 為 400 時所返回的物件，並透過解構賦值存放在變數 Year,Month,Day,Hour,Minute 中
           const { Year, Month, Day, Hour, Minute } = responseData;
         // 設定前端要 Alert 訊息的變數，將前後 90 分鐘的區間透過 day.js 做計算
@@ -145,15 +153,14 @@ export default function DateTimeProvider({ children }) {
  // 刪除預約的 function 
  const handleDeleteFirstBooking = async () => {
    try {
+    const bookingIdToDelete = localStorage.getItem('bookingIdToDelete');
     const userConfirmed = window.confirm('請確定要刪除預約嗎 ?');
      if (userConfirmed) {
-    
-       const response = await fetch(`http://localhost:8000/deleteBooking/${bookingIdToDelete}`, {
+       const response = await fetch(`http://localhost:8000/noAuthDelete/${bookingIdToDelete}`, {
          method: 'DELETE',
          headers: {
            'Content-Type': 'application/json',
          },
-         body: JSON.stringify({}),
        });
        const responseData = await response.json();
        console.log(responseData);
@@ -164,11 +171,11 @@ export default function DateTimeProvider({ children }) {
           icon: 'success',
           confirmButtonText: '了解'
         })
+        localStorage.removeItem('bookingIdToDelete')
          setSelectDateTime([])
          setFirstValue('');
-         setSecondItem('');
+         setSecondItem('')
          setShowOriginButton(true);
-         setNotbooking(true)
        } else {
          alert('刪除失敗或找不到預約');
          Swal.fire({
@@ -186,34 +193,46 @@ export default function DateTimeProvider({ children }) {
      console.error('Error deleting booking:', error);
    }
  };
- // 確認預約後回到首頁
- const handleConfirmBooking = async () => {
-  try {
-    const result = await Swal.fire({
-      title: '請確認預約',
-      text: '將返回首頁，若要查看預約項目，請點擊右上角查看預約',
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: '確認',
-      cancelButtonText: '取消',
-    });
-    if (result.isConfirmed) {
-      navigate('/HumanDesign')
-    } else {
-      Swal.fire({
-        title: '再想想',
-        text: '若想要預約新的日期請先刪除此次預約!',
-        icon: 'error',
-        confirmButtonText: '了解',
-      });
+ // 回到首頁，順便寄確認 Email 給沒有註冊的使用者
+ const handleSendEmail=async ()=>{
+    try{
+        const userConfirmed = window.confirm('確認預約後將無法再更改預約，已考慮清楚 ?');
+        if(userConfirmed){
+          const response=await fetch('http://localhost:8000/NoauthSendEmail',{
+            method:'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+          const responseData=await response.json()
+          console.log(responseData)
+          if(responseData.success){
+            const result = await Swal.fire({
+              title: '確認信',
+              text: '將返回首頁，請到你的信箱查看確認信',
+              icon: 'success',
+              showCancelButton: true,
+              confirmButtonText: '了解並返回首頁',
+              cancelButtonText: '再想想',
+            });
+            if (result.isConfirmed) {
+              negative('/HumanDesign')
+            } else {
+              Swal.fire({
+                title: '再想想',
+                text: '請刪除預約或重新選取',
+                icon: 'question',
+                confirmButtonText: '了解',
+              });
+            }
+          }  
+        }      
+    }catch(error){
+      console.log('無法寄出確認信',error)
     }
-  } catch (error) {
-    console.log(error);
-  }
-};
- 
+ }
   return (
-    <DateTimeContext.Provider value={{ 
+    <NoAuthDateTimeContext.Provider value={{ 
      selectDateTime, 
      handleSelectDateTime,
      handleSendDateTime,
@@ -226,11 +245,10 @@ export default function DateTimeProvider({ children }) {
      handleSecondAutocompleteChange,
      handleDeleteFirstBooking,
      handleResetBooking,
-     notbooking,
-     setNotbooking,
-     handleConfirmBooking
+     setEmail,
+     handleSendEmail
    }}>
       {children}
-    </DateTimeContext.Provider>
+    </NoAuthDateTimeContext.Provider>
     )
   }

@@ -3,31 +3,12 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { useEffect,useState} from 'react';
-import { useSelector, useDispatch } from 'react-redux'
-import { setData } from '../../ToolkitComponents/AboutFetchData/AboutJeromeSlice'
-import { RootState } from '../../ToolkitComponents/Store'
+import { useTypeHumanDesign } from '../../ReactQueryCompoents/WhatisHumanDesign';
 
 
 
 export default function TalentHumanDesign() {
-  const datas=useSelector((state:RootState)=>state.aboutJerome)
-  const dispatch=useDispatch()
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('http://localhost:9000/human/talentHuman');
-        const Data = await response.json();
-        console.log(Data)
-        dispatch(setData(Data));
-      } 
-      catch (error) {
-        console.log(error);
-      }
-    };
-    fetchData();
-  }, []);
   const [scrollY, setScrollY] = useState(0);
-
   useEffect(() => {
     const handleScroll = () => {
       setScrollY(window.scrollY);
@@ -39,6 +20,9 @@ export default function TalentHumanDesign() {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+  const{data:datas,isLoading,error}=useTypeHumanDesign()
+  if(isLoading) return <p>Loading...</p>
+  if(error) return <p>Error :{error.message}</p>
 
   return (
     <Container className={style.HumanDesignWrap} fluid>
@@ -92,6 +76,7 @@ export default function TalentHumanDesign() {
    
   );
 }
+
 
 
 

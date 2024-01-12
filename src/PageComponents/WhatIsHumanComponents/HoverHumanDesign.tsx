@@ -1,33 +1,18 @@
 import style from '../../CssModules/HumanDesignIntroduce.module.css'
 import Container from 'react-bootstrap/Container';
-import { useEffect} from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { setData } from '../../ToolkitComponents/AboutFetchData/AboutJeromeSlice';
-import { RootState } from '../../ToolkitComponents/Store';
+import { useHoverHumanDesing } from '../../ReactQueryCompoents/WhatisHumanDesign';
 import {Link} from 'react-router-dom'
 
 const HoverHumanDesign = () => {
-    const datas=useSelector((state:RootState)=>state.aboutJerome)
 
-  const dispatch=useDispatch()
-    useEffect(() => {
-        const fetchData = async () => {
-          try {
-            const response = await fetch('http://localhost:9000/human/hoverIntroducer');
-            const Data = await response.json();
-            dispatch(setData(Data));
-          } 
-          catch (error) {
-            console.log(error);
-          }
-        };
-        fetchData();
-      }, [])
+const{data:datas,isLoading,error}=useHoverHumanDesing()
+  if(isLoading) return <p>Loading...</p>
+  if(error) return <p>Error :{error.message}</p>
   return (
     <Container fluid className={style.HoverHumanDesignWarap}>
-    {datas.map((data)=>(
-      <Link to={data.url} style={{cursor:'pointer'}} key={data.id}>
-        <div className={style.HoverHumanDesignItem} >
+    {datas.map((data,index)=>(
+      <Link to={data.url} style={{cursor:'pointer'}}  key={index}>
+        <div className={style.HoverHumanDesignItem}>
         <img src={`https://picsum.photos/400/400?random=${data.id}`} />
         <div className={style.HoverHumanDesignText}>
             <h3>{data.title}</h3>

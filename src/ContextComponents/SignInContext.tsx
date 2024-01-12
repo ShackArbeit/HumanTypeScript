@@ -1,12 +1,10 @@
 import { useState, createContext,useEffect } from 'react';
 import {useNavigate} from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { ReactNode } from 'react';
-import { SignInContextType } from './TypeOfContext';
 
-export const SignInContext=createContext<SignInContextType|undefined>(undefined)
+export const SignInContext=createContext()
 
-export default function SignInProvider({ children }: { children: ReactNode }){
+export default function SignInProvider({children}){
       const passwordPattern = /^(?=.*[A-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       const [open, setOpen] = useState(true);
@@ -16,11 +14,11 @@ export default function SignInProvider({ children }: { children: ReactNode }){
       const StorageEmail=localStorage.getItem('rememberedEmail')
       const StoragePassword=localStorage.getItem('remeberMePassword')
       const negative=useNavigate()
-      const handleSubmit = async (event:React.FormEvent<HTMLFormElement>) => {
+      const handleSubmit = async (event) => {
             event.preventDefault();
             const data = new FormData(event.currentTarget);
-            const email = data.get('email')?.toString()||''
-            const password = data.get('password')?.toString()||''
+            const email = data.get('email');
+            const password = data.get('password');
     
             if (email==='' || password==='') {
                   Swal.fire({
@@ -71,7 +69,7 @@ export default function SignInProvider({ children }: { children: ReactNode }){
                 icon: 'success',
                 confirmButtonText: '了解'
               })
-              localStorage.setItem('isLoggin', String(true));
+              localStorage.setItem('isLoggin', true);
               setIsLoggin(true)
               negative('/HumanDesign/bookingAfterSignIn')
             }else{
@@ -88,10 +86,10 @@ export default function SignInProvider({ children }: { children: ReactNode }){
         }      
   };
         
-      const handleSubmitResendPassword= async(event:React.FormEvent<HTMLFormElement>)=>{
+      const handleSubmitResendPassword= async(event)=>{
             event.preventDefault();
             const data = new FormData(event.currentTarget);
-            const email = data.get('email')?.toString()||''
+            const email = data.get('email');
             if (email==='') {
               Swal.fire({
                 title: '不得空白',
